@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Список контента</h1>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <input type="text" class="form-control" id="searchName" placeholder="Поиск по имени">
+    </div>
+    <div class="col-md-6">
+        <input type="text" class="form-control" id="searchPath" placeholder="Поиск по пути">
+    </div>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+    <tr>
+        <th>Имя</th>
+        <th>Расширение</th>
+        <th>Размер (байт)</th>
+        <th>Относительный путь расположения</th>
+        <th>Дата создания</th>
+        <th>Действие</th>
+    </tr>
+    </thead>
+    <tbody id="files-body">
+    <!-- JS отрисует сюда строки -->
+    </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/files/index.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/files/actions.js') }}"></script>
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+<!-- HTML модалки -->
+<div class="modal fade" id="fileDetailModal" tabindex="-1" aria-labelledby="fileDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileDetailModalLabel">Информация о файле</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Имя:</strong>
+                    <input type="text" id="detail-name" class="form-control">
+                </p>
+                <p><strong>Расширение:</strong> <span id="detail-extension"></span></p>
+                <p><strong>Размер:</strong> <span id="detail-size"></span> байт</p>
+                <p><strong>Путь:</strong>
+                    <input type="text" id="detail-path" class="form-control" placeholder="storage/">
+                </p>
+                <p><strong>Дата создания:</strong> <span id="detail-created"></span></p>
+                <p><strong>Дата изменения:</strong> <span id="detail-updated"></span></p>
+                <p><strong>Комментарий:</strong></p>
+                <textarea id="detail-comment" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="modal-download-btn">Скачать</button>
+                <button type="button" class="btn btn-danger" id="modal-delete-btn">Удалить</button>
+                <button type="button" class="btn btn-primary" id="save-detail-btn">Сохранить изменения</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="uploadForm" class="modal-content" enctype="multipart/form-data">
+            <div class="modal-header">
+                <h5 class="modal-title">Загрузить файл</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">Файл</label>
+                    <input type="file" class="form-control" id="fileInput" name="file" required/>
+                </div>
+                <div class="mb-3">
+                    <label for="uploadFilename" class="form-label">Имя файла</label>
+                    <input type="text" class="form-control" id="uploadFilename" name="filename" required/>
+                </div>
+                <div class="mb-3">
+                    <label for="uploadPath" class="form-label">Путь</label>
+                    <input type="text" class="form-control" id="uploadPath" name="path" placeholder="storage/"
+                           required/>
+                </div>
+                <div class="mb-3">
+                    <label for="uploadComment" class="form-label">Комментарий</label>
+                    <textarea class="form-control" id="uploadComment" name="comment"
+                              placeholder="Имя файла можно указывать как с расширением, так и без. Путь: с '/', '.', '\' -> поместит файл в корень хранилища."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Загрузить</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
