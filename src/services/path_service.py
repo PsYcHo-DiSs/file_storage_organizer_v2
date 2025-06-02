@@ -21,7 +21,7 @@ def sanitize_filename(name: str) -> str:
         str: Очищенное и транслитерированное имя файла, безопасное для использования.
     """
     name = unidecode(name)  # Транслитерация кириллицы
-    name = re.sub(r'[^A-Za-z0-9_\-\.]+', '_', name)  # Только латиница, цифры, _, -, .
+    name = re.sub(r'[^A-Za-z0-9_\-\\]+', '_', name)  # Только латиница, цифры, _, -, .
     return name.strip('_')
 
 
@@ -40,7 +40,7 @@ def sanitize_path_components(path: str) -> str:
     """
     normalized = Config.normalize_path(path.strip())
 
-    parts = re.split(r'[\\/]', normalized)  # разбиваем по / или \
+    parts = re.split(r'[\\/.]', normalized)  # разбиваем по / или \
     sanitized_parts = [sanitize_filename(part) for part in parts if part]
 
     sep = '\\' if 'win' in Config.OS else '/'
@@ -60,6 +60,9 @@ def clean_path(path: str) -> str:
     Returns:
         str: Очищенный путь с безопасными именами директорий.
     """
+    path = path.strip()
+    if path in ("", ".", "/", "\\"):
+        return ""
 
     return sanitize_path_components(path)
 
