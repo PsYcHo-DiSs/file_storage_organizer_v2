@@ -26,6 +26,9 @@ class FileRecord(db.Model):
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False)
     updated_at = db.Column(db.DateTime(timezone=True), onupdate=lambda: datetime.now(UTC), nullable=True)
     comment = db.Column(db.String(1024), nullable=True)
+    __table_args__ = (
+        db.UniqueConstraint('name', 'extension', 'path', name='uix_file_identity'),
+    )
 
     def to_dict(self):
         """

@@ -1,5 +1,8 @@
-from flask import Blueprint, request, jsonify, render_template, send_file, abort
 from datetime import datetime, UTC
+
+from flask import Blueprint, request, jsonify, render_template, send_file, abort
+from sqlalchemy.exc import IntegrityError
+
 from src.services.file_service import FileService
 from src.config import Config
 
@@ -87,6 +90,8 @@ def upload_file():
         return jsonify(file.to_dict()), 201
     except ValueError as e:
         return jsonify({"message": str(e)}), 400  # <- пользовательская ошибка
+    except IntegrityError:
+        return jsonify({"message": "Файл уже существует (на уровне базы)."}), 400
 
     except Exception as e:
         return jsonify({"message": "Ошибка при загрузке", "error": str(e)}), 500
